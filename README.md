@@ -310,16 +310,3 @@ This project uses the `mckinseysolvegame` package which has its own license. Ple
 3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## Support
-
-For issues and questions:
-- Open an issue on GitHub
-- Check the troubleshooting section above
-- Review API documentation at `http://localhost:8000/docs`
-
----
-
-Built with ❤️ using FastAPI + React TypeScript
-
-**Success Probability: 90%** ✨
