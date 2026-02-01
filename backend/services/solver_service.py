@@ -1,25 +1,36 @@
 from typing import List, Dict, Any
 import pandas as pd
-import sys
-import os
 
-# Add mckinseysolvegame to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../mckinseysolvegame'))
-
-from mckinseysolvegame.services.optimization_service import OptimizationService
+from mckinseysolvegame import Solver
 
 
 class SolverService:
     def __init__(self):
-        self.solver = OptimizationService()
+        self.solver = Solver()
 
     def solve_food_chain(self, species_data: List[dict]) -> Dict[str, Any]:
         """Call mckinseysolvegame solver"""
-        df = pd.DataFrame(species_data)
+        from mckinseysolvegame import Species
 
-        # The OptimizationService expects specific column names
-        # Ensure the dataframe has the correct format
-        result = self.solver.solve(df)
+        # Convert dictionaries to Species objects
+        species_objects = []
+        for species_dict in species_data:
+            # Parse food_sources from semicolon-separated string to list
+            food_sources_str = species_dict.get('food_sources', '')
+            food_sources_list = [fs.strip() for fs in food_sources_str.split(';') if fs.strip()]
+
+            species_obj = Species(
+                name=species_dict['name'],
+                calories_provided=int(species_dict['calories_provided']),
+                calories_needed=int(species_dict['calories_needed']),
+                depth_range=species_dict['depth_range'],
+                temperature_range=species_dict['temperature_range'],
+                food_sources=food_sources_list
+            )
+            species_objects.append(species_obj)
+
+        # Use the Solver to find sustainable food chain
+        result = self.solver.find_sustainable_food_chain(species_objects)
         return result
 
     def validate_selection(self, species_list: List[dict], location: dict) -> Dict[str, Any]:
