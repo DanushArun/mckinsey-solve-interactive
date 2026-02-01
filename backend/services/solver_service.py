@@ -17,7 +17,14 @@ class SolverService:
         for species_dict in species_data:
             # Parse food_sources from semicolon-separated string to list
             food_sources_str = species_dict.get('food_sources', '')
-            food_sources_list = [fs.strip() for fs in food_sources_str.split(';') if fs.strip()]
+
+            # Handle NaN values from pandas
+            if pd.isna(food_sources_str):
+                food_sources_list = []
+            elif isinstance(food_sources_str, str):
+                food_sources_list = [fs.strip() for fs in food_sources_str.split(';') if fs.strip()]
+            else:
+                food_sources_list = []
 
             species_obj = Species(
                 name=species_dict['name'],
